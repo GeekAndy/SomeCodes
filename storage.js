@@ -70,7 +70,6 @@ var storage = (function(){
 		var j = 0;
 		for(i = 0; i < storageDatasLength; i ++)
 		{
-			index = start + i;
 			if(storageDatasKeys[i] != index)
 			{
 				needKeys[j] = storageDatasKeys[i];
@@ -125,20 +124,19 @@ var storage = (function(){
 	
 	/**
 	 * 返回json格式串
-	 *@param start 表示仓库中相应数据的索引
-	 *@param length 取多少条
+	 *@param start int 表示仓库中相应数据的索引
+	 *@param length int 取多少条
 	 */
 	function getDatas(start, length)
 	{
-		length = arguments[1] ? arguments[1] : 1;
+		length = arguments[1] ? arguments[1] : (arguments[0] ? 1 : storageDatasLength);
+		start = arguments[0] ? arguments[0] : 0;
 		var needDatas = {};
-		var index = start;
 		for(i = 0; i < length; i ++)
 		{
-			index = start + i;
-			if(typeof(storageDatasVals.index) != 'undefined')
+			if(storageDatasKeys[i] && storageDatasKeys[i] >= start)
 			{
-				needDatas.i = storageDatasVals.index;
+				needDatas[storageDatasKeys[i]] = storageDatasVals[storageDatasKeys[i]];
 			}
 		}
 		return needDatas;
@@ -146,5 +144,9 @@ var storage = (function(){
 	
 	return {
 		init : init,
+		addData : addData,
+		delData : delData,
+		getData : getData,
+		getDatas : getDatas
 	}
 })();
