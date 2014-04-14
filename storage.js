@@ -1,5 +1,5 @@
-//本地仓库初始化
-storage.init('fav_local_pro');
+//首先要进行本地仓库初始化
+//storage.init('storageName');
 
 /**
  * 定义一个JS本地仓库类(HTML5)
@@ -26,7 +26,8 @@ var storage = (function(){
 		storageDatasKeyVal = JSON.parse(localStorage.getItem(storageName)) ? JSON.parse(localStorage.getItem(storageName)) : storageDatasKeyVal;
 		storageDatasKeys = storageDatasKeyVal.key ? storageDatasKeyVal.key : {};
 		storageDatasVals = storageDatasKeyVal.val ? storageDatasKeyVal.val : {};
-		storageDatasLength = storageDatasKeys.length;
+		storageDatasLength = Object.keys(storageDatasKeys).length;
+		//alert(storageDatasLength);
 	}
 	
 	/**
@@ -36,7 +37,7 @@ var storage = (function(){
 	{
 		try
 		{
-			storageDatasLength = storageDatasKeys.length;
+			storageDatasLength = Object.keys(storageDatasKeys).length;
 			storageDatasKeyVal.key = storageDatasKeys;
 			storageDatasKeyVal.val = storageDatasVals;
 			localStorage.setItem(storageName, JSON.stringify(storageDatasKeyVal));
@@ -85,8 +86,8 @@ var storage = (function(){
 	 */
 	function addData(data)
 	{
-		storageDatasKeys[storageDatasLength] = getMaxKey + 1;
-		storageDatasVals[getMaxKey + 1] = data;
+		storageDatasKeys[storageDatasLength] = getMaxKey() + 1;
+		storageDatasVals[getMaxKey() + 1] = data;
 		if(finish())
 		{
 			return true;
@@ -131,10 +132,11 @@ var storage = (function(){
 	{
 		length = arguments[1] ? arguments[1] : (arguments[0] ? 1 : storageDatasLength);
 		start = arguments[0] ? arguments[0] : 0;
+		//alert(start + ', ' + length);
 		var needDatas = {};
 		for(i = 0; i < length; i ++)
 		{
-			if(storageDatasKeys[i] && storageDatasKeys[i] >= start)
+			if(storageDatasKeys[i] >= 0 && storageDatasKeys[i] >= start)
 			{
 				needDatas[storageDatasKeys[i]] = storageDatasVals[storageDatasKeys[i]];
 			}
