@@ -98,7 +98,7 @@ var storage = (function(){
 	//根据索引删除值
 	function delData(index)
 	{
-		if(storageDatasVals[index])
+		if(typeof(storageDatasVals[index]) != 'undefined')
 		{
 			delIndexKey(index);
 			delete storageDatasVals[index];
