@@ -125,23 +125,51 @@ var storage = (function(){
 	
 	/**
 	 * 返回json格式串
-	 *@param start int 表示仓库中相应数据的索引
-	 *@param length int 取多少条
+	 *@param counts int 表示从仓库中取出的个数 >= 1, -1 -> all
+	 *@param offset int 相对于开始的偏移量
+	 *@param orderby string Enum('DESC', 'ASC') 正序还是倒序
 	 */
-	function getDatas(start, length)
+	function getDatas(counts, offset, orderby)
 	{
-		length = arguments[1] ? arguments[1] : (arguments[0] ? 1 : storageDatasLength);
-		start = arguments[0] ? arguments[0] : 0;
-		//alert(start + ', ' + length);
-		var needDatas = {};
-		for(i = 0; i < length; i ++)
+		counts = arguments[0] > 0 ? ( arguments[0] >= storageDatasLength ? storageDatasLength : arguments[0]) : ( arguments[0] == -1 ? storageDatasLength : 0 );
+		offset = arguments[1] ? arguments[1] : 0;
+		orderby = arguments[2] ? arguments[2].toUpperCase() : 'DESC';
+		var allDatas = {};
+		var m = 0;
+		switch(orderby)
 		{
-			if(storageDatasKeys[i] >= 0 && storageDatasKeys[i] >= start)
+			case 'ASC':
 			{
-				needDatas[storageDatasKeys[i]] = storageDatasVals[storageDatasKeys[i]];
+				for(i = 0; i < storageDatasLength; i ++)
+				{
+					allDatas[m] = [storageDatasKeys[i], storageDatasVals[storageDatasKeys[i]]];
+					m++;
+				}
+				break;
+			}
+			case 'DESC':
+			{
+				for(i = storageDatasLength - 1; i >= 0; i --)
+				{
+					allDatas[m] = [storageDatasKeys[i], storageDatasVals[storageDatasKeys[i]]];
+					m++;
+				}
+				break;
+			}
+			default:
+			{
+				return false;
 			}
 		}
-		return needDatas;
+		var returnDatas = {};
+		var offsetCounts = offset + counts;
+		var i =0;
+		for(j = offset; j < offsetCounts; j ++)
+		{
+			returnDatas[i] = allDatas[j][1];
+			i++;
+		}
+		return returnDatas;
 	}
 	
 	return {
